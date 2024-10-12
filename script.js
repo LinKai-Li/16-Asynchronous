@@ -259,6 +259,7 @@ TEST DATA: Images in the img folder. Test the error handler by passing a wrong i
 GOOD LUCK 😀
 */
 
+/*
 const imgContainer = document.querySelector(".images");
 
 const createImage = function (imgPath) {
@@ -305,3 +306,34 @@ createImage("img/img-1.jpg")
     currentImg.style.display = "none";
   })
   .catch((err) => console.error(err));
+*/
+
+const getPosition = function () {
+  return new Promise(function (resolve, reject) {
+    navigator.geolocation.getCurrentPosition(resolve, reject);
+  });
+};
+
+// fetch(
+//   `https://countries-api-836d.onrender.com/countries/name/${country}`
+// ).then((res) => console.log(res));
+
+const whereAmI = async function () {
+  // Geolocation
+  const pos = await getPosition;
+  const { latitude: lat, longitude: lng } = pos.coords;
+
+  // Reverse geocoding
+  const resGeo = await fetch(`https://geocode.xyz/${lat},${lng}?geoit=json`);
+  const dataGeo = await resGeo.json();
+
+  // Country data
+  const res = await fetch(
+    `https://countries-api-836d.onrender.com/countries/name/${dataGeo.country}`
+  );
+  const data = await res.json();
+  console.log(data);
+  renderCountry(data[0]);
+};
+whereAmI();
+console.log("FIRST");
